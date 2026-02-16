@@ -3,15 +3,13 @@ package com.bank.banking.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bank.banking.model.User;
 import com.bank.banking.model.Transaction;
 import com.bank.banking.service.UserService;
 import com.bank.banking.security.JwtUtil;
-
-
-import java.util.List;
-import java.util.Map;
-
 
 @RestController
 @RequestMapping("/api/user")
@@ -20,11 +18,10 @@ public class UserController {
 
     @Autowired
     private UserService service;
+
     @Autowired
     private JwtUtil jwtUtil;
 
-
-    // Register
     @PostMapping("/register")
     public User register(@RequestBody User user) {
         return service.register(user);
@@ -51,20 +48,25 @@ public class UserController {
         return Map.of("error", "Invalid Credentials");
     }
 
-
-    // Deposit
     @PostMapping("/deposit/{id}/{amount}")
     public User deposit(@PathVariable int id, @PathVariable double amount) {
         return service.deposit(id, amount);
     }
 
-    // Withdraw
     @PostMapping("/withdraw/{id}/{amount}")
     public User withdraw(@PathVariable int id, @PathVariable double amount) {
         return service.withdraw(id, amount);
     }
 
-    // Transaction history
+    @PostMapping("/transfer/{id}")
+    public User transfer(
+            @PathVariable int id,
+            @RequestParam String accountNumber,
+            @RequestParam double amount) {
+
+        return service.transfer(id, accountNumber, amount);
+    }
+
     @GetMapping("/transactions/{id}")
     public List<Transaction> getTransactions(@PathVariable int id) {
         return service.getTransactions(id);

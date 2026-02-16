@@ -16,7 +16,7 @@ body {
     box-shadow: 0 15px 25px rgba(0,0,0,0.2);
 }
 
-h2 {
+h2, h3 {
     text-align: center;
 }
 
@@ -86,22 +86,4 @@ button:hover {
 .withdraw {
     color: red;
     font-weight: bold;
-}
-
-.flash-green {
-    animation: greenFlash 0.5s ease;
-}
-
-.flash-red {
-    animation: redFlash 0.5s ease;
-}
-
-@keyframes greenFlash {
-    0% { background: #d4edda; }
-    100% { background: white; }
-}
-
-@keyframes redFlash {
-    0% { background: #f8d7da; }
-    100% { background: white; }
 }

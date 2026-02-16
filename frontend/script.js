@@ -1,19 +1,73 @@
 const BASE_URL = "http://localhost:8081/api/user";
 
+/* ===========================
+   REGISTER
+=========================== */
+function register() {
+
+    let name = document.getElementById("regName").value;
+    let email = document.getElementById("regEmail").value;
+    let password = document.getElementById("regPassword").value;
+
+    if (!name || !email || !password) {
+        document.getElementById("registerError").innerText =
+            "All fields are required";
+        return;
+    }
+
+    fetch(BASE_URL + "/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Registration failed");
+        return res.json();
+    })
+    .then(data => {
+
+        alert("Account created successfully!");
+
+        window.location.href = "login.html";
+    })
+    .catch(err => {
+        document.getElementById("registerError").innerText =
+            err.message;
+    });
+}
+
+/* ===========================
+   LOGIN
+=========================== */
 function login() {
+
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        document.getElementById("loginError").innerText =
+            "Enter email and password";
+        return;
+    }
+
     fetch(BASE_URL + "/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            email: document.getElementById("email").value,
-            password: document.getElementById("password").value
+            email: email,
+            password: password
         })
     })
     .then(res => res.json())
     .then(data => {
 
         if (data.error) {
-            document.getElementById("loginError").innerText = "Invalid Credentials";
+            document.getElementById("loginError").innerText =
+                "Invalid Credentials";
             return;
         }
 
@@ -27,6 +81,9 @@ function login() {
     });
 }
 
+/* ===========================
+   DASHBOARD LOAD
+=========================== */
 function loadDashboard() {
 
     document.getElementById("welcome").innerText =
@@ -41,6 +98,9 @@ function loadDashboard() {
     loadTransactions();
 }
 
+/* ===========================
+   DEPOSIT / WITHDRAW
+=========================== */
 function deposit() {
     handleTransaction("deposit");
 }
@@ -56,7 +116,8 @@ function handleTransaction(type) {
     let amount = parseFloat(document.getElementById("amount").value);
 
     if (!amount || amount <= 0) {
-        document.getElementById("errorMessage").innerText = "Enter valid amount";
+        document.getElementById("errorMessage").innerText =
+            "Enter valid amount";
         return;
     }
 
@@ -69,47 +130,61 @@ function handleTransaction(type) {
         return res.json();
     })
     .then(data => {
-        document.getElementById("errorMessage").innerText = "";
-        animateBalance(data.balance);
+
+        localStorage.setItem("balance", data.balance);
         document.getElementById("amount").value = "";
-        loadTransactions();
+
+        loadDashboard();
     })
     .catch(err => {
-        document.getElementById("errorMessage").innerText = err.message;
+        document.getElementById("errorMessage").innerText =
+            err.message;
     });
 }
 
-function animateBalance(newBalance) {
+/* ===========================
+   TRANSFER
+=========================== */
+function transfer() {
 
-    let balanceElement = document.getElementById("balance");
-    let current = parseFloat(localStorage.getItem("balance"));
+    let token = localStorage.getItem("token");
+    let userId = localStorage.getItem("userId");
 
-    let increment = (newBalance - current) / 20;
-    let counter = 0;
+    let receiverAccount = document.getElementById("receiverAccount").value;
+    let amount = parseFloat(document.getElementById("transferAmount").value);
 
-    let isIncrease = newBalance > current;
+    if (!receiverAccount || !amount || amount <= 0) {
+        document.getElementById("transferError").innerText =
+            "Enter valid transfer details";
+        return;
+    }
 
-    let interval = setInterval(() => {
-        current += increment;
-        balanceElement.innerText = "Balance: ₹ " + current.toFixed(2);
-        counter++;
+    fetch(BASE_URL + "/transfer/" + userId +
+          "?accountNumber=" + receiverAccount +
+          "&amount=" + amount, {
 
-        if (counter >= 20) {
-            clearInterval(interval);
-            balanceElement.innerText = "Balance: ₹ " + newBalance.toFixed(2);
-            localStorage.setItem("balance", newBalance);
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Transfer failed");
+        return res.json();
+    })
+    .then(data => {
 
-            balanceElement.classList.add(
-                isIncrease ? "flash-green" : "flash-red"
-            );
+        localStorage.setItem("balance", data.balance);
 
-            setTimeout(() => {
-                balanceElement.classList.remove("flash-green", "flash-red");
-            }, 500);
-        }
-    }, 20);
+        window.location.href = "dashboard.html";
+    })
+    .catch(err => {
+        document.getElementById("transferError").innerText =
+            err.message;
+    });
 }
 
+/* ===========================
+   TRANSACTIONS
+=========================== */
 function loadTransactions() {
 
     let token = localStorage.getItem("token");
@@ -122,6 +197,8 @@ function loadTransactions() {
     .then(data => {
 
         let container = document.getElementById("transactions");
+        if (!container) return;
+
         container.innerHTML = "";
 
         data.forEach(tx => {
@@ -129,7 +206,7 @@ function loadTransactions() {
             let div = document.createElement("div");
             div.classList.add("transaction-item");
 
-            if (tx.type === "DEPOSIT") {
+            if (tx.type === "DEPOSIT" || tx.type === "TRANSFER_IN") {
                 div.classList.add("deposit");
             } else {
                 div.classList.add("withdraw");
@@ -141,6 +218,20 @@ function loadTransactions() {
     });
 }
 
+/* ===========================
+   NAVIGATION
+=========================== */
+function goToTransfer() {
+    window.location.href = "transfer.html";
+}
+
+function goBack() {
+    window.location.href = "dashboard.html";
+}
+
+/* ===========================
+   LOGOUT
+=========================== */
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
