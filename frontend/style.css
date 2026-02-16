@@ -1,0 +1,107 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #4e73df, #1cc88a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    width: 420px;
+    border-radius: 12px;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+}
+
+h2 {
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    background: #4e73df;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #2e59d9;
+}
+
+.logout-btn {
+    background: #e74a3b;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
+
+.info-box {
+    background: #f8f9fc;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}
+
+#transactions {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    background: #f8f9fc;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.transaction-item {
+    padding: 6px;
+    border-bottom: 1px solid #ddd;
+}
+
+.deposit {
+    color: green;
+    font-weight: bold;
+}
+
+.withdraw {
+    color: red;
+    font-weight: bold;
+}
+
+.flash-green {
+    animation: greenFlash 0.5s ease;
+}
+
+.flash-red {
+    animation: redFlash 0.5s ease;
+}
+
+@keyframes greenFlash {
+    0% { background: #d4edda; }
+    100% { background: white; }
+}
+
+@keyframes redFlash {
+    0% { background: #f8d7da; }
+    100% { background: white; }
+}

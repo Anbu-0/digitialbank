@@ -6,8 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import com.bank.banking.model.User;
 import com.bank.banking.model.Transaction;
 import com.bank.banking.service.UserService;
+import com.bank.banking.security.JwtUtil;
+
 
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/user")
@@ -16,6 +20,9 @@ public class UserController {
 
     @Autowired
     private UserService service;
+    @Autowired
+    private JwtUtil jwtUtil;
+
 
     // Register
     @PostMapping("/register")
@@ -23,11 +30,27 @@ public class UserController {
         return service.register(user);
     }
 
-    // Login
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
-        return service.login(user.getEmail(), user.getPassword());
+    public Object login(@RequestBody User user) {
+
+        User loggedUser = service.login(user.getEmail(), user.getPassword());
+
+        if (loggedUser != null) {
+
+            String token = jwtUtil.generateToken(loggedUser.getEmail());
+
+            return Map.of(
+                    "token", token,
+                    "id", loggedUser.getId(),
+                    "name", loggedUser.getName(),
+                    "accountNumber", loggedUser.getAccountNumber(),
+                    "balance", loggedUser.getBalance()
+            );
+        }
+
+        return Map.of("error", "Invalid Credentials");
     }
+
 
     // Deposit
     @PostMapping("/deposit/{id}/{amount}")

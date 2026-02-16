@@ -3,6 +3,7 @@ package com.bank.banking.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -13,8 +14,19 @@ public class User {
     private String email;
     private String password;
     private double balance;
+    @Column(unique = true)
+    private String accountNumber;
 
-    // Getters and Setters
+
+    public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	// Getters and Setters
     public int getId() {
         return id;
     }

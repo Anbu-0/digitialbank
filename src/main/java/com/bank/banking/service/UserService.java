@@ -9,6 +9,7 @@ import com.bank.banking.repository.UserRepository;
 import com.bank.banking.repository.TransactionRepository;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserService {
@@ -22,6 +23,10 @@ public class UserService {
     // Register
     public User register(User user) {
         user.setBalance(0);
+     // Generate random 10-digit account number
+        String accNumber = String.valueOf(1000000000L + new Random().nextLong(9000000000L));
+        user.setAccountNumber(accNumber);
+        
         return userRepo.save(user);
     }
 
@@ -46,6 +51,7 @@ public class UserService {
         }
         return user;
     }
+    
 
     // Withdraw
     public User withdraw(int userId, double amount) {

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="loadDashboard()">
+
+<div class="container">
+
+    <h2>Dashboard</h2>
+
+    <div class="info-box">
+        <p id="welcome"></p>
+        <p id="account"></p>
+        <p id="balance"></p>
+    </div>
+
+    <p id="errorMessage" class="error"></p>
+
+    <input type="number" id="amount" placeholder="Enter Amount">
+
+    <button onclick="deposit()">Deposit</button>
+    <button onclick="withdraw()">Withdraw</button>
+
+    <button onclick="logout()" class="logout-btn">Logout</button>
+
+    <h3>Transaction History</h3>
+    <div id="transactions"></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
