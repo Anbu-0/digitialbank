@@ -13,41 +13,58 @@
     </div>
 </header>
 
-<main class="dashboard-wrapper">
+<main class="layout">
 
-    <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h3>Menu</h3>
+        <ul>
+            <li class="active">Dashboard</li>
+            <li onclick="goToTransfer()">Transfer</li>
+            <li onclick="logout()">Logout</li>
+        </ul>
+    </aside>
 
-        <!-- Account Summary -->
-        <div class="account-summary">
-            <h2 id="welcomeBig"></h2>
-            <p id="accountInfo"></p>
-            <h3 id="balanceBig"></h3>
+    <!-- Content -->
+    <section class="content">
+
+        <div class="dashboard-container">
+
+            <!-- Balance Card -->
+            <div class="balance-card">
+                <h2 id="welcomeBig"></h2>
+                <p id="accountInfo"></p>
+                <div class="balance-amount" id="balanceBig"></div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <input type="number" id="amount" placeholder="Enter Amount">
+                <button onclick="deposit()">Deposit</button>
+                <button onclick="withdraw()">Withdraw</button>
+            </div>
+
+            <!-- Transactions -->
+            <div class="transaction-card">
+                <h3>Recent Transactions</h3>
+
+                <div class="transaction-table-wrapper">
+                    <table class="transaction-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th style="text-align:right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- Action Buttons -->
-        <div class="actions">
-            <input type="number" id="amount" placeholder="Enter Amount">
-            <button onclick="deposit()">Deposit</button>
-            <button onclick="withdraw()">Withdraw</button>
-            <button onclick="goToTransfer()">Transfer</button>
-        </div>
-
-        <!-- Transactions -->
-        <div class="transaction-card">
-            <h3>Recent Transactions</h3>
-
-            <table class="transaction-table">
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th style="text-align:right;">Amount</th>
-                    </tr>
-                </thead>
-                <tbody id="transactions"></tbody>
-            </table>
-        </div>
-
-    </div>
+    </section>
 
 </main>
 
