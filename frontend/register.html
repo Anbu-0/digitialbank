@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Register - SecureBank</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="container">
-
-    <h2>Create Account</h2>
-
-    <p id="registerError" class="error"></p>
-
-    <input type="text" id="regName" placeholder="Full Name">
-    <input type="email" id="regEmail" placeholder="Email">
-    <input type="password" id="regPassword" placeholder="Password">
-
-    <button onclick="register()">Register</button>
-
-    <p style="text-align:center; margin-top:10px;">
-        Already have account?
+<header>
+    <h1>SecureBank</h1>
+    <div>
+        <a href="home.html">Home</a>
         <a href="login.html">Login</a>
-    </p>
+    </div>
+</header>
 
-</div>
+<main>
+    <div class="form-card">
+        <h2>Create Account</h2>
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="email" id="regEmail" placeholder="Email">
+        <input type="password" id="regPassword" placeholder="Password">
+        <button class="btn" onclick="register()">Register</button>
+    </div>
+</main>
+
+<footer>
+    © 2026 SecureBank. All Rights Reserved.
+</footer>
 
 <script src="script.js"></script>
 </body>

@@ -1,74 +1,45 @@
-const BASE_URL = "http://localhost:8081/api/user";
+const API = "http://localhost:8081/api";
 
-/* ===========================
-   REGISTER
-=========================== */
-function register() {
+/* ===================================================
+   AUTH HELPERS
+=================================================== */
 
-    let name = document.getElementById("regName").value;
-    let email = document.getElementById("regEmail").value;
-    let password = document.getElementById("regPassword").value;
-
-    if (!name || !email || !password) {
-        document.getElementById("registerError").innerText =
-            "All fields are required";
-        return;
-    }
-
-    fetch(BASE_URL + "/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            name: name,
-            email: email,
-            password: password
-        })
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Registration failed");
-        return res.json();
-    })
-    .then(data => {
-
-        alert("Account created successfully!");
-
-        window.location.href = "login.html";
-    })
-    .catch(err => {
-        document.getElementById("registerError").innerText =
-            err.message;
-    });
+function getToken() {
+    return localStorage.getItem("token");
 }
 
-/* ===========================
-   LOGIN
-=========================== */
-function login() {
+function getUserId() {
+    return localStorage.getItem("userId");
+}
 
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-
-    if (!email || !password) {
-        document.getElementById("loginError").innerText =
-            "Enter email and password";
-        return;
+function checkAuth() {
+    if (!getToken() || !getUserId()) {
+        window.location.href = "login.html";
     }
+}
 
-    fetch(BASE_URL + "/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            email: email,
-            password: password
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
 
-        if (data.error) {
-            document.getElementById("loginError").innerText =
-                "Invalid Credentials";
-            return;
+/* ===================================================
+   LOGIN
+=================================================== */
+
+async function login(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    try {
+        const response = await fetch(API + "/user/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+            throw new Error("Invalid email or password");
         }
 
         localStorage.setItem("token", data.token);
@@ -78,160 +49,232 @@ function login() {
         localStorage.setItem("balance", data.balance);
 
         window.location.href = "dashboard.html";
-    });
+
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
-/* ===========================
-   DASHBOARD LOAD
-=========================== */
-function loadDashboard() {
 
-    document.getElementById("welcome").innerText =
+/* ===================================================
+   REGISTER
+=================================================== */
+
+async function register(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPassword").value.trim();
+
+    try {
+        const response = await fetch(API + "/user/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        if (!response.ok) {
+            throw new Error("Registration failed");
+        }
+
+        alert("Account created successfully!");
+        window.location.href = "login.html";
+
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+
+/* ===================================================
+   DASHBOARD LOAD
+=================================================== */
+
+async function loadDashboard() {
+
+    checkAuth();
+
+    document.getElementById("welcomeBig").innerText =
         "Welcome, " + localStorage.getItem("name");
 
-    document.getElementById("account").innerText =
+    document.getElementById("accountInfo").innerText =
         "Account No: " + localStorage.getItem("accountNumber");
 
-    document.getElementById("balance").innerText =
-        "Balance: ₹ " + localStorage.getItem("balance");
+    document.getElementById("balanceBig").innerText =
+        "Available Balance: ₹ " + localStorage.getItem("balance");
 
-    loadTransactions();
+    await loadTransactions();
 }
 
-/* ===========================
-   DEPOSIT / WITHDRAW
-=========================== */
-function deposit() {
-    handleTransaction("deposit");
+
+/* ===================================================
+   LOAD TRANSACTIONS
+=================================================== */
+
+async function loadTransactions() {
+
+    const response = await fetch(
+        API + "/user/transactions/" + getUserId(),
+        {
+            headers: {
+                "Authorization": "Bearer " + getToken()
+            }
+        }
+    );
+
+    if (!response.ok) {
+        console.error("Failed to load transactions");
+        return;
+    }
+
+    const transactions = await response.json();
+    const table = document.getElementById("transactions");
+    table.innerHTML = "";
+
+    transactions.forEach(tx => {
+
+        const row = document.createElement("tr");
+
+        const typeCell = document.createElement("td");
+        typeCell.innerText = tx.type;
+
+        const amountCell = document.createElement("td");
+        amountCell.style.textAlign = "right";
+        amountCell.innerText = "₹ " + tx.amount;
+
+        if (tx.type.includes("DEPOSIT") || tx.type.includes("IN")) {
+            amountCell.classList.add("deposit");
+        } else {
+            amountCell.classList.add("withdraw");
+        }
+
+        row.appendChild(typeCell);
+        row.appendChild(amountCell);
+        table.appendChild(row);
+    });
 }
 
-function withdraw() {
-    handleTransaction("withdraw");
-}
 
-function handleTransaction(type) {
+/* ===================================================
+   DEPOSIT
+=================================================== */
 
-    let token = localStorage.getItem("token");
-    let userId = localStorage.getItem("userId");
-    let amount = parseFloat(document.getElementById("amount").value);
+async function deposit() {
+
+    const amount = document.getElementById("amount").value;
 
     if (!amount || amount <= 0) {
-        document.getElementById("errorMessage").innerText =
-            "Enter valid amount";
+        alert("Enter valid amount");
         return;
     }
 
-    fetch(BASE_URL + "/" + type + "/" + userId + "/" + amount, {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + token }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Transaction Failed");
-        return res.json();
-    })
-    .then(data => {
-
-        localStorage.setItem("balance", data.balance);
-        document.getElementById("amount").value = "";
-
-        loadDashboard();
-    })
-    .catch(err => {
-        document.getElementById("errorMessage").innerText =
-            err.message;
-    });
-}
-
-/* ===========================
-   TRANSFER
-=========================== */
-function transfer() {
-
-    let token = localStorage.getItem("token");
-    let userId = localStorage.getItem("userId");
-
-    let receiverAccount = document.getElementById("receiverAccount").value;
-    let amount = parseFloat(document.getElementById("transferAmount").value);
-
-    if (!receiverAccount || !amount || amount <= 0) {
-        document.getElementById("transferError").innerText =
-            "Enter valid transfer details";
-        return;
-    }
-
-    fetch(BASE_URL + "/transfer/" + userId +
-          "?accountNumber=" + receiverAccount +
-          "&amount=" + amount, {
-
-        method: "POST",
-        headers: { "Authorization": "Bearer " + token }
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Transfer failed");
-        return res.json();
-    })
-    .then(data => {
-
-        localStorage.setItem("balance", data.balance);
-
-        window.location.href = "dashboard.html";
-    })
-    .catch(err => {
-        document.getElementById("transferError").innerText =
-            err.message;
-    });
-}
-
-/* ===========================
-   TRANSACTIONS
-=========================== */
-function loadTransactions() {
-
-    let token = localStorage.getItem("token");
-    let userId = localStorage.getItem("userId");
-
-    fetch(BASE_URL + "/transactions/" + userId, {
-        headers: { "Authorization": "Bearer " + token }
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        let container = document.getElementById("transactions");
-        if (!container) return;
-
-        container.innerHTML = "";
-
-        data.forEach(tx => {
-
-            let div = document.createElement("div");
-            div.classList.add("transaction-item");
-
-            if (tx.type === "DEPOSIT" || tx.type === "TRANSFER_IN") {
-                div.classList.add("deposit");
-            } else {
-                div.classList.add("withdraw");
+    const response = await fetch(
+        API + "/user/deposit/" + getUserId() + "/" + amount,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + getToken()
             }
+        }
+    );
 
-            div.innerText = tx.type + " ₹" + tx.amount;
-            container.appendChild(div);
-        });
-    });
+    if (!response.ok) {
+        alert("Deposit failed");
+        return;
+    }
+
+    const updatedUser = await response.json();
+    localStorage.setItem("balance", updatedUser.balance);
+
+    await loadDashboard();
 }
 
-/* ===========================
-   NAVIGATION
-=========================== */
+
+/* ===================================================
+   WITHDRAW
+=================================================== */
+
+async function withdraw() {
+
+    const amount = document.getElementById("amount").value;
+
+    if (!amount || amount <= 0) {
+        alert("Enter valid amount");
+        return;
+    }
+
+    const response = await fetch(
+        API + "/user/withdraw/" + getUserId() + "/" + amount,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + getToken()
+            }
+        }
+    );
+
+    if (!response.ok) {
+        alert("Withdraw failed");
+        return;
+    }
+
+    const updatedUser = await response.json();
+    localStorage.setItem("balance", updatedUser.balance);
+
+    await loadDashboard();
+}
+
+
+/* ===================================================
+   TRANSFER
+=================================================== */
+
+async function transferMoney() {
+
+    checkAuth();
+
+    const toAccount = document.getElementById("toAccount").value;
+    const amount = document.getElementById("transferAmount").value;
+
+    if (!toAccount || !amount || amount <= 0) {
+        alert("Enter valid details");
+        return;
+    }
+
+    const response = await fetch(
+        API + "/user/transfer/" + getUserId() +
+        "?accountNumber=" + toAccount +
+        "&amount=" + amount,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + getToken()
+            }
+        }
+    );
+
+    if (!response.ok) {
+        alert("Transfer failed");
+        return;
+    }
+
+    const updatedUser = await response.json();
+    localStorage.setItem("balance", updatedUser.balance);
+
+    document.getElementById("transferMessage").innerText =
+        "Transfer successful!";
+}
+
 function goToTransfer() {
     window.location.href = "transfer.html";
 }
 
-function goBack() {
-    window.location.href = "dashboard.html";
-}
 
-/* ===========================
+/* ===================================================
    LOGOUT
-=========================== */
+=================================================== */
+
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";

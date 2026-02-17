@@ -1,32 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Transfer Money</title>
+    <title>Transfer - SecureBank</title>
     <link rel="stylesheet" href="style.css">
 </head>
+<body onload="checkAuth()">
 
-<body>
+<header>
+    <h1>SecureBank NetBanking</h1>
+    <div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+</header>
 
-<div class="container">
+<main class="transfer-wrapper">
 
-    <h2>Transfer Money</h2>
+    <div class="transfer-card">
 
-    <p id="transferError" class="error"></p>
+        <h2>Fund Transfer</h2>
+        <p class="transfer-sub">
+            Send money securely to another account.
+        </p>
 
-    <input type="text" id="receiverAccount"
-           placeholder="Receiver Account Number">
+        <div class="transfer-form">
+            <input type="text"
+                   id="toAccount"
+                   placeholder="Beneficiary Account Number">
 
-    <input type="number" id="transferAmount"
-           placeholder="Amount">
+            <input type="number"
+                   id="transferAmount"
+                   placeholder="Enter Amount">
 
-    <button onclick="transfer()">Transfer</button>
+            <button onclick="transferMoney()"
+                    class="primary-btn">
+                Transfer Now
+            </button>
+        </div>
 
-    <button onclick="goBack()" class="logout-btn">
-        Back to Dashboard
-    </button>
+        <p id="transferMessage" class="transfer-msg"></p>
 
-</div>
+    </div>
+
+</main>
+
+<footer>
+    © 2026 SecureBank. All Rights Reserved.
+</footer>
 
 <script src="script.js"></script>
 </body>

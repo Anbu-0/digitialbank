@@ -1,38 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>Dashboard - SecureBank</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body onload="loadDashboard()">
 
-<div class="container">
+<header>
+    <h1>SecureBank NetBanking</h1>
+    <div>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+</header>
 
-    <h2>Dashboard</h2>
+<main class="dashboard-wrapper">
 
-    <div class="info-box">
-        <p id="welcome"></p>
-        <p id="account"></p>
-        <p id="balance"></p>
+    <div class="dashboard-container">
+
+        <!-- Account Summary -->
+        <div class="account-summary">
+            <h2 id="welcomeBig"></h2>
+            <p id="accountInfo"></p>
+            <h3 id="balanceBig"></h3>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <input type="number" id="amount" placeholder="Enter Amount">
+            <button onclick="deposit()">Deposit</button>
+            <button onclick="withdraw()">Withdraw</button>
+            <button onclick="goToTransfer()">Transfer</button>
+        </div>
+
+        <!-- Transactions -->
+        <div class="transaction-card">
+            <h3>Recent Transactions</h3>
+
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th style="text-align:right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions"></tbody>
+            </table>
+        </div>
+
     </div>
 
-    <p id="errorMessage" class="error"></p>
+</main>
 
-    <input type="number" id="amount" placeholder="Enter Amount">
-
-    <button onclick="deposit()">Deposit</button>
-    <button onclick="withdraw()">Withdraw</button>
-
-    <button onclick="goToTransfer()">Transfer Money</button>
-
-    <button onclick="logout()" class="logout-btn">Logout</button>
-
-    <h3>Transaction History</h3>
-    <div id="transactions"></div>
-
-</div>
+<footer>
+    © 2026 SecureBank. All Rights Reserved.
+</footer>
 
 <script src="script.js"></script>
 </body>
