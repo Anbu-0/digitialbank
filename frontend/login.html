@@ -18,7 +18,7 @@
     <div class="form-card">
         <h2>Login</h2>
 
-        <form onsubmit="login(event)">
+        <form id="loginForm">
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
             <button type="submit" class="btn">Login</button>
@@ -32,5 +32,12 @@
 </footer>
 
 <script src="script.js"></script>
+
+<script>
+    // Attach event listener properly
+    document.getElementById("loginForm")
+        .addEventListener("submit", login);
+</script>
+
 </body>
 </html>

@@ -4,7 +4,7 @@
     <title>Dashboard - SecureBank</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body onload="loadDashboard()">
+<body onload="initDashboard()">
 
 <header>
     <h1>SecureBank NetBanking</h1>
@@ -13,28 +13,27 @@
     </div>
 </header>
 
-<main class="layout">
+<div class="layout">
 
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <div class="sidebar">
         <h3>Menu</h3>
         <ul>
             <li class="active">Dashboard</li>
             <li onclick="goToTransfer()">Transfer</li>
             <li onclick="logout()">Logout</li>
         </ul>
-    </aside>
+    </div>
 
     <!-- Content -->
-    <section class="content">
-
+    <div class="content">
         <div class="dashboard-container">
 
-            <!-- Balance Card -->
-            <div class="balance-card">
-                <h2 id="welcomeBig"></h2>
-                <p id="accountInfo"></p>
-                <div class="balance-amount" id="balanceBig"></div>
+            <!-- Account Summary -->
+            <div class="account-summary gradient-card">
+                <h2 id="welcomeText"></h2>
+                <p id="accountNumberText"></p>
+                <h3 id="balanceText"></h3>
             </div>
 
             <!-- Actions -->
@@ -48,11 +47,12 @@
             <div class="transaction-card">
                 <h3>Recent Transactions</h3>
 
-                <div class="transaction-table-wrapper">
+                <div class="transaction-scroll">
                     <table class="transaction-table">
                         <thead>
                             <tr>
                                 <th>Type</th>
+                                <th>Date & Time</th>
                                 <th style="text-align:right;">Amount</th>
                             </tr>
                         </thead>
@@ -63,10 +63,9 @@
             </div>
 
         </div>
+    </div>
 
-    </section>
-
-</main>
+</div>
 
 <footer>
     © 2026 SecureBank. All Rights Reserved.

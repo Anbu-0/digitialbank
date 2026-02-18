@@ -17,10 +17,15 @@
 <main>
     <div class="form-card">
         <h2>Create Account</h2>
-        <input type="text" id="name" placeholder="Full Name">
-        <input type="email" id="regEmail" placeholder="Email">
-        <input type="password" id="regPassword" placeholder="Password">
-        <button class="btn" onclick="register()">Register</button>
+
+        <form id="registerForm">
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="email" id="regEmail" placeholder="Email" required>
+            <input type="password" id="regPassword" placeholder="Password" required>
+
+            <button type="submit" class="btn">Register</button>
+        </form>
+
     </div>
 </main>
 
@@ -29,5 +34,12 @@
 </footer>
 
 <script src="script.js"></script>
+
+<script>
+    // Attach event listener properly
+    document.getElementById("registerForm")
+        .addEventListener("submit", register);
+</script>
+
 </body>
 </html>

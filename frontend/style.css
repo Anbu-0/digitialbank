@@ -7,15 +7,15 @@
     font-family: 'Segoe UI', sans-serif;
 }
 
-html, body {
-    height: 100%;
-}
-
 body {
     background: #f4f6f9;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Prevent full page scrolling */
+}
+
+a {
+    text-decoration: none;
 }
 
 /* ================= HEADER ================= */
@@ -30,18 +30,12 @@ header {
 }
 
 header h1 {
-    font-size: 28px;
+    font-size: 26px;
 }
 
 header a {
     color: white;
-    text-decoration: none;
-    margin-left: 25px;
-    font-weight: 500;
-}
-
-header a:hover {
-    text-decoration: underline;
+    margin-left: 20px;
 }
 
 /* ================= FOOTER ================= */
@@ -50,26 +44,127 @@ footer {
     background: #0a3a6b;
     color: white;
     text-align: center;
-    padding: 20px;
-    flex-shrink: 0;
+    padding: 18px;
+    margin-top: auto;
+}
+
+/* ================= MAIN ================= */
+
+main {
+    flex: 1;
+    padding: 40px 60px;
+}
+
+/* ================= HERO (HOME PAGE) ================= */
+
+.hero {
+    background: linear-gradient(135deg, #0a3a6b, #144e8c);
+    color: white;
+    padding: 70px 60px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.hero-text h2 {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.hero-text p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+.credit-card {
+    width: 320px;
+    height: 190px;
+    border-radius: 15px;
+    padding: 25px;
+    background: linear-gradient(135deg, #111, #333);
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* ================= SERVICES ================= */
+
+.services {
+    margin-top: 40px;
+}
+
+.services h2 {
+    margin-bottom: 25px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.service-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+/* ================= FORM CARD ================= */
+
+.form-card {
+    width: 400px;
+    margin: 80px auto;
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.form-card h2 {
+    margin-bottom: 25px;
+}
+
+.form-card input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: #0a3a6b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #083058;
 }
 
 /* ================= DASHBOARD LAYOUT ================= */
 
 .layout {
     display: flex;
-    height: calc(100vh - 76px - 60px); 
-    /* 76px header + 60px footer approx */
+    flex: 1;
 }
-
-/* Sidebar */
 
 .sidebar {
     width: 220px;
     background: #0a3a6b;
     color: white;
     padding: 30px 20px;
-    flex-shrink: 0;
 }
 
 .sidebar h3 {
@@ -84,7 +179,6 @@ footer {
     padding: 12px 0;
     cursor: pointer;
     opacity: 0.85;
-    transition: 0.2s;
 }
 
 .sidebar li:hover,
@@ -93,39 +187,38 @@ footer {
     font-weight: 600;
 }
 
-/* Content */
-
 .content {
     flex: 1;
     padding: 40px 60px;
-    overflow-y: auto; /* Only this scrolls */
 }
 
-/* ================= BALANCE CARD ================= */
+.dashboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
 
-.balance-card {
+/* ================= ACCOUNT SUMMARY ================= */
+
+.account-summary {
+    padding: 30px 40px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.gradient-card {
     background: linear-gradient(135deg, #0a3a6b, #144e8c);
     color: white;
-    padding: 35px 45px;
-    border-radius: 14px;
-    margin-bottom: 30px;
 }
 
-.balance-card p {
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 10px;
-}
-
-.balance-amount {
-    font-size: 28px;
-    font-weight: 700;
+.gradient-card h3 {
+    font-size: 24px;
     margin-top: 10px;
 }
 
 /* ================= ACTIONS ================= */
 
 .actions {
-    background: #f5f7fb;
+    background: #f8f9fc;
     padding: 20px 30px;
     border-radius: 10px;
     margin-bottom: 30px;
@@ -148,32 +241,29 @@ footer {
     background: #0a3a6b;
     color: white;
     cursor: pointer;
-    font-size: 14px;
-    transition: 0.2s;
 }
 
 .actions button:hover {
     background: #083058;
 }
 
-/* ================= TRANSACTION CARD ================= */
+/* ================= TRANSACTIONS ================= */
 
 .transaction-card {
     background: white;
     padding: 30px 40px;
-    border-radius: 14px;
+    border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* Scroll wrapper inside card */
-
-.transaction-table-wrapper {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 20px;
+.transaction-card h3 {
+    margin-bottom: 20px;
 }
 
-/* Table */
+.transaction-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+}
 
 .transaction-table {
     width: 100%;
@@ -184,9 +274,6 @@ footer {
     text-align: left;
     padding: 15px 0;
     border-bottom: 2px solid #ddd;
-    position: sticky;
-    top: 0;
-    background: white;
 }
 
 .transaction-table td {
@@ -194,22 +281,13 @@ footer {
     border-bottom: 1px solid #eee;
 }
 
+.transaction-table td:last-child {
+    text-align: right;
+}
+
 .transaction-table tbody tr:hover {
     background: #f5f7fb;
 }
-
-/* Scrollbar */
-
-.transaction-table-wrapper::-webkit-scrollbar {
-    width: 6px;
-}
-
-.transaction-table-wrapper::-webkit-scrollbar-thumb {
-    background: #c5cbd6;
-    border-radius: 4px;
-}
-
-/* Transaction Colors */
 
 .deposit {
     color: green;
@@ -226,23 +304,26 @@ footer {
 .transfer-wrapper {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: calc(100vh - 76px - 60px);
+    padding: 80px 20px;
 }
 
 .transfer-card {
     width: 500px;
-    max-width: 95%;
     background: white;
     padding: 40px;
     border-radius: 14px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.08);
 }
 
+.transfer-card h2 {
+    margin-bottom: 10px;
+}
+
 .transfer-form {
     display: flex;
     flex-direction: column;
     gap: 18px;
+    margin-top: 20px;
 }
 
 .transfer-form input {
@@ -251,30 +332,45 @@ footer {
     border: 1px solid #ccc;
 }
 
-.transfer-form input:focus {
-    outline: none;
-    border-color: #0a3a6b;
-    box-shadow: 0 0 8px rgba(10,58,107,0.2);
-}
-
-.primary-btn {
+.transfer-form button {
     padding: 14px;
-    border: none;
     border-radius: 8px;
+    border: none;
     background: linear-gradient(135deg, #0a3a6b, #144e8c);
     color: white;
-    font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
+}
+.transaction-scroll {
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-.primary-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+.transaction-table th,
+.transaction-table td {
+    padding: 14px 10px;
+}
+.transaction-scroll {
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-.transfer-msg {
-    margin-top: 20px;
-    font-weight: 500;
-    color: green;
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transaction-table th,
+.transaction-table td {
+    padding: 14px 12px;
+}
+
+.transaction-table thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 2;
+}
+
+.transaction-table tbody tr:hover {
+    background: #f5f7fb;
 }

@@ -4,6 +4,7 @@
     <title>Transfer - SecureBank</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body onload="checkAuth()">
 
 <header>
@@ -17,29 +18,17 @@
 <main class="transfer-wrapper">
 
     <div class="transfer-card">
-
         <h2>Fund Transfer</h2>
-        <p class="transfer-sub">
-            Send money securely to another account.
-        </p>
+        <p>Send money securely to another account.</p>
 
         <div class="transfer-form">
-            <input type="text"
-                   id="toAccount"
-                   placeholder="Beneficiary Account Number">
+            <input type="text" id="beneficiary" placeholder="Beneficiary Account Number" required>
+            <input type="number" id="transferAmount" placeholder="Enter Amount" required>
 
-            <input type="number"
-                   id="transferAmount"
-                   placeholder="Enter Amount">
+            <button onclick="transferMoney()">Transfer Now</button>
 
-            <button onclick="transferMoney()"
-                    class="primary-btn">
-                Transfer Now
-            </button>
+            <p id="transferMessage"></p>
         </div>
-
-        <p id="transferMessage" class="transfer-msg"></p>
-
     </div>
 
 </main>
