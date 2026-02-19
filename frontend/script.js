@@ -1,5 +1,6 @@
 const API = "http://localhost:8081/api/user";
 
+
 /* ================= AUTH CHECK ================= */
 
 function checkAuth() {
