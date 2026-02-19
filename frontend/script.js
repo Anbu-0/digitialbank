@@ -27,9 +27,7 @@ async function login(event) {
     try {
         const response = await fetch(API + "/login", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
         });
 
@@ -88,13 +86,10 @@ async function loadTransactions() {
             }
         );
 
-        if (!response.ok) {
-            throw new Error("Unauthorized");
-        }
+        if (!response.ok) throw new Error("Unauthorized");
 
         let transactions = await response.json();
 
-        // NEWEST FIRST
         transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         const table = document.getElementById("transactions");
@@ -104,22 +99,12 @@ async function loadTransactions() {
 
             const row = document.createElement("tr");
 
-            // Type
             const typeCell = document.createElement("td");
             typeCell.innerText = tx.type;
 
-            // Date & Time
             const dateCell = document.createElement("td");
-            dateCell.innerText = new Date(tx.date)
-                .toLocaleString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                });
+            dateCell.innerText = new Date(tx.date).toLocaleString("en-IN");
 
-            // Amount
             const amountCell = document.createElement("td");
             amountCell.style.textAlign = "right";
             amountCell.innerText = "₹ " + tx.amount;
@@ -160,9 +145,7 @@ async function deposit() {
             API + "/deposit/" + user.id + "/" + amount,
             {
                 method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
+                headers: { "Authorization": "Bearer " + token }
             }
         );
 
@@ -180,7 +163,6 @@ async function deposit() {
         loadTransactions();
 
     } catch (error) {
-        console.error(error);
         alert("Deposit failed");
     }
 }
@@ -203,9 +185,7 @@ async function withdraw() {
             API + "/withdraw/" + user.id + "/" + amount,
             {
                 method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
+                headers: { "Authorization": "Bearer " + token }
             }
         );
 
@@ -223,23 +203,56 @@ async function withdraw() {
         loadTransactions();
 
     } catch (error) {
-        console.error(error);
         alert("Withdraw failed");
     }
 }
 
-/* ================= NAVIGATION ================= */
+/* ================= TRANSFER ================= */
 
-function goToTransfer() {
-    window.location.href = "transfer.html";
+async function transferMoney() {
+
+    checkAuth();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+
+    const accountNumber = document.getElementById("beneficiary").value.trim();
+    const amount = document.getElementById("transferAmount").value;
+
+    if (!accountNumber || !amount || amount <= 0) {
+        alert("Enter valid details");
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            API + "/transfer/" + user.id +
+            "?accountNumber=" + accountNumber +
+            "&amount=" + amount,
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        if (!response.ok) throw new Error("Transfer failed");
+
+        const updatedUser = await response.json();
+
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        alert("Transfer Successful!");
+
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        alert("Transfer failed");
+        console.error(error);
+    }
 }
 
-/* ================= LOGOUT ================= */
-
-function logout() {
-    localStorage.clear();
-    window.location.href = "login.html";
-}
 /* ================= REGISTER ================= */
 
 async function register(event) {
@@ -258,31 +271,32 @@ async function register(event) {
     try {
         const response = await fetch(API + "/register", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                password: password
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password })
         });
 
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Server error:", errorText);
-            alert("Registration failed. Email might already exist.");
+            alert("Registration failed. Email may already exist.");
             return;
         }
 
-        await response.json();
-
         alert("Registration successful! Please login.");
-
         window.location.href = "login.html";
 
     } catch (error) {
-        console.error("Register failed:", error);
         alert("Backend not running or server error");
     }
+}
+
+/* ================= NAVIGATION ================= */
+
+function goToTransfer() {
+    window.location.href = "transfer.html";
+}
+
+/* ================= LOGOUT ================= */
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
 }
